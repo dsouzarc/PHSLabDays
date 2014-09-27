@@ -2,17 +2,20 @@ import com.sendgrid.SendGrid;
 import com.sendgrid.SendGrid.Email;
 import com.sendgrid.SendGridException;
 
+import java.io.FileInputStream;
+import java.util.Properties;
+import java.util.ResourceBundle;
 import java.util.Scanner;
 
 public class SendMessages {
 	private static final Scanner theScanner = new Scanner(System.in);
-	public static void main(String[] ryan) { 
-		System.out.println("Starting...");
-		final String username = "dsouzarc";
+	
+	public static void main(String[] ryan) throws Exception { 
+		final Properties properties = new Properties();
+		properties.load(new FileInputStream("information.properties"));
 		
-		System.out.println("Password");
-		final String password = theScanner.nextLine();
-		
+		final String username = properties.getProperty("username");
+		final String password = properties.getProperty("password");
 		
 		SendGrid sendgrid = new SendGrid(username, password);
 		Email email = new Email();
