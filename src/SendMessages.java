@@ -4,7 +4,6 @@ import com.sendgrid.SendGridException;
 
 import java.io.FileInputStream;
 import java.util.Properties;
-import java.util.ResourceBundle;
 import java.util.Scanner;
 
 public class SendMessages {
@@ -16,14 +15,17 @@ public class SendMessages {
 		
 		final String username = properties.getProperty("username");
 		final String password = properties.getProperty("password");
+		final String phone = properties.getProperty("phone") + Variables.VERIZON;
+
 		
-		SendGrid sendgrid = new SendGrid(username, password);
+		final SendGrid sendgrid = new SendGrid(username, password);
+		
 		Email email = new Email();
-		email.addTo("6092165624@txt.att.net");
-		email.addToName("What");
+		email.addTo(phone);
+		//email.addToName("What");
 		email.setFrom("dsouzarc@gmail.com");
 		email.setSubject("Augustus?");
-		email.setText("If you get this, text me (Ryan D'souza) on 6099154930");
+		email.setText("If you get this, text me (Ryan D'souza)");
 		try {
 			sendgrid.send(email);
 			System.out.println("Sent!");
