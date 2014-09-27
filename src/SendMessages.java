@@ -17,7 +17,6 @@ public class SendMessages {
 		final String password = properties.getProperty("password");
 		final String phone = properties.getProperty("phone") + Variables.VERIZON;
 
-		
 		final SendGrid sendgrid = new SendGrid(username, password);
 		
 		Email email = new Email();
