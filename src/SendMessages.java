@@ -1,9 +1,15 @@
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.LinkedList;
 import java.util.Properties;
 import java.util.Scanner;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import com.sendgrid.SendGrid;
 import com.sendgrid.SendGrid.Email;
@@ -11,7 +17,7 @@ import com.sendgrid.SendGrid.Email;
 public class SendMessages {
 	private static final Scanner theScanner = new Scanner(System.in);
 	private static final String fileName = "PHS Lab Days - Form Responses 1.csv";
-	private static final String storedFileName = "numbers.txt";
+	private static final String storedFileName = "src/numbers.txt";
 	
 	private final String username, password, phone;
 	private final SendGrid sendgrid;
@@ -24,6 +30,50 @@ public class SendMessages {
 		this.password = properties.getProperty("password");
 		this.phone = properties.getProperty("phone") + Variables.VERIZON;
 		this.sendgrid = new SendGrid(username, password);
+	}
+	
+	public Person[] getPeopleFromFile() { 
+		try { 
+			final StringBuilder allData = new StringBuilder("");
+			final BufferedReader theReader = new BufferedReader(new FileReader(storedFileName));
+			
+			while(theReader.ready()) { 
+				allData.append(theReader.readLine());
+			}
+			
+			JSONObject theObj = new JSONObject(allData.toString());
+			
+			JSONArray peopleArray = theObj.getJSONArray("people");
+			
+			
+			
+		}
+		catch(Exception e) { 
+			System.out.println(e.toString());
+		}
+		
+		return new Person[]{};
+	}
+	
+	public void writeToFile() { 
+		File file = new File(storedFileName);
+		final Person[] people = getPeople();
+		final JSONObject allPeople = new JSONObject();
+		final JSONArray info = new JSONArray();
+		
+		for(Person p : people) { 
+			info.put(p.getJSON());
+		}
+		allPeople.put("people", info);
+		
+		try { 
+			BufferedWriter theWriter = new BufferedWriter(new FileWriter(file));
+			theWriter.write(allPeople.toString());
+			theWriter.close();
+		}
+		catch(Exception e) { 
+			System.out.println("Error writing: " + e.toString());
+		}
 	}
 	
 	public void sendDaily() { 
@@ -75,6 +125,8 @@ public class SendMessages {
 	public static void main(String[] ryan) throws Exception {
 		final SendMessages theSender = new SendMessages();
 		theSender.sendWelcome();
+		theSender.writeToFile();
+		theSender.getPeopleFromFile();
 	}
 	
 	private static Person[] getPeople() { 

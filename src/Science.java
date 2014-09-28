@@ -50,8 +50,13 @@ public class Science {
 	}
 	
 	public static Science getScience(final JSONObject theObject) { 
-		return new Science(theObject.getString("name"), 
-				stringToLetters(theObject.getString("letters")));
+		try { 
+			return new Science(theObject.getString("name"), 
+					stringToLetters(theObject.getString("letters")));
+		}
+		catch(Exception e) { 
+			return null;
+		}
 	}
 	
 	public JSONObject getJSON() { 
@@ -59,10 +64,15 @@ public class Science {
 	}
 	
 	public static JSONObject getJSON(final Science theScience) { 
-		JSONObject theObj = new JSONObject("science");
-		theObj.put("name", theScience.getScienceName());
-		theObj.put("letters", lettersToString(theScience.getLabDays()));
-		return theObj;
+		try { 
+			JSONObject theObj = new JSONObject();
+			theObj.put("name", theScience.getScienceName());
+			theObj.put("letters", lettersToString(theScience.getLabDays()));
+			return theObj;
+		}
+		catch(Exception e) { 
+			return null;
+		}
 	}
 	
 	@Override

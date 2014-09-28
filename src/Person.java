@@ -73,7 +73,7 @@ public class Person {
 	}
 	
 	public static JSONObject getJSON(final Person thePerson) { 
-		final JSONObject theObj = new JSONObject("person");
+		final JSONObject theObj = new JSONObject();
 		theObj.put("name", thePerson.getName());
 		theObj.put("phone", thePerson.getPhoneNumber());
 		theObj.put("carrier", thePerson.getCarrier());
