@@ -18,6 +18,9 @@ public class Science {
 	}
 	
 	public boolean isLabDay(final char today) { 
+		if(labDays == null) { 
+			return false;
+		}
 		for(char theDay : labDays) { 
 			if(theDay == today) { 
 				return true;

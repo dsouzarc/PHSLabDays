@@ -1,16 +1,12 @@
-import com.sendgrid.SendGrid;
-import com.sendgrid.SendGrid.Email;
-import com.sendgrid.SendGridException;
-
+import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.FileReader;
+import java.util.LinkedList;
 import java.util.Properties;
 import java.util.Scanner;
-import java.util.regex.Pattern;
-import java.util.LinkedList;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+
+import com.sendgrid.SendGrid;
+import com.sendgrid.SendGrid.Email;
  
 public class SendMessages {
 	private static final Scanner theScanner = new Scanner(System.in);
@@ -22,17 +18,15 @@ public class SendMessages {
 
 		final String username = properties.getProperty("username");
 		final String password = properties.getProperty("password");
-		final String phone = properties.getProperty("phone")
-				+ Variables.VERIZON;
+		final String phone = properties.getProperty("phone") + Variables.VERIZON;
 		
 		final Person[] thePeople = getPeople();
 		
 		for(Person person : thePeople) { 
-			System.out.println(person.toString());
+			System.out.println(person.getMessage());
 		}
-		
 
-		/*final SendGrid sendgrid = new SendGrid(username, password);
+		final SendGrid sendgrid = new SendGrid(username, password);
 
 		Email email = new Email();
 		email.addTo(phone);
@@ -41,13 +35,12 @@ public class SendMessages {
 		email.setSubject("Augustus?");
 		email.setText("If you get this, text me (Ryan D'souza)");
 		try {
-			sendgrid.send(email);
+			//sendgrid.send(email);
 			System.out.println("Sent!");
-		} catch (SendGridException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("Error" + e.toString());
-		}*/
-		getPeople();
+		}
 	}
 	
 	private static Person[] getPeople() { 
@@ -59,22 +52,27 @@ public class SendMessages {
 			
 			//Un-needed stuff (like titles/table names, etc.)
 			theReader.readLine();
-			Pattern commaPattern = Pattern.compile(",(?![^\"\"]*\\))") ;
+			
 			while(theReader.ready()) { 
-				final String line = theReader.readLine();
+				final String line = theReader.readLine() + ", ";
 				System.out.println(line);
-				final String[] data = (line.replace(", ", "|").split(","));
+				final String[] data = (line.replace(", ", "|").replace(",,", ", ,").split(","));
+				System.out.println(data.length);
+				
+				/*for(int i = 0; i < data.length; i++) { 
+					System.out.println(i + "\t" + data[i]);
+				}*/
 				
 				final String name = data[1];
-				final String number = data[2];
+				final String number = formatNumber(data[2]);
 				final String carrier = assignCarrier(data[3].toLowerCase());
-				final boolean everyday = data[3].contains("Every");
-				final String science1 = data[4];
-				final char[] labDays1 = getLabDays(data[5]);
-				final String science2 = data[6];
-				final char[] labDays2 = getLabDays(data[7]);
-				final String misc = data[8];
-				final char[] miscDays = getLabDays(data[9]);
+				final boolean everyday = data[4].contains("Every");
+				final String science1 = data[5];
+				final char[] labDays1 = getLabDays(data[6]);
+				final String science2 = data[7];
+				final char[] labDays2 = getLabDays(data[8]);
+				final String misc = data[9];
+				final char[] miscDays = getLabDays(data[10]);
 				
 				final Person person = new Person(name, number, carrier, 
 						new Science[]{new Science(science1, labDays1), new Science(science2, labDays2)}, 
@@ -88,6 +86,15 @@ public class SendMessages {
 			System.out.println("Error: " + e.toString());
 		}
 		return null;
+	}
+	
+	private static String formatNumber(String text) { 
+		text = text.replace("(", "").replace(")", "");
+		text = text.replace("-", "").replace(" ", "");
+		
+		//Just in case some idiot puts a police number
+		text = text.replace("911", "");
+		return text;
 	}
 	
 	private static char[] getLabDays(String text) { 

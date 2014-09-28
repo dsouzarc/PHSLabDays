@@ -29,13 +29,18 @@ public class Person {
 		final StringBuilder text = new StringBuilder(message);
 		
 		//Good Morning Ryan! or Good Morning!
-		text.append(name.length() > 1 ? " " + name + "!": "!");
+		text.append(name.length() > 1 ? " " + name + "! ": "! ");
 		
-		text.append("Today is a '" + letterDay + "' day");
+		if(letterDay == 'A') { 
+			text.append("Today is an '" + letterDay + "' day. ");
+		}
+		else { 
+			text.append("Today is a '" + letterDay + "' day. ");
+		}
 
 		//Add lab day info.
 		for(Science science : scienceClasses) { 
-			if(science.isLabDay(letterDay)) { 
+			if(science != null && science.isLabDay(letterDay)) { 
 				text.append("Today is a lab day for " + science.getScienceName() + " ");
 			}
 		}
@@ -44,11 +49,11 @@ public class Person {
 		}
 		
 		//If it's not Monday and we don't get it everyday
-		if(todayCalendar.get(Calendar.DAY_OF_WEEK) != 1 && !everyDay) { 
+		if(todayCalendar.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY && !everyDay) { 
 			return text.toString();
 		}
 		
-		if(todayCalendar.get(Calendar.DAY_OF_WEEK) == 1) { 
+		if(todayCalendar.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) { 
 			text.append("Days of School Left: " + (180 - numSchoolDaysOver) + ". ");
 			text.append("Next Break: " + noSchool);
 		}
