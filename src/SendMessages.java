@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.LinkedList;
 import java.util.Properties;
+import java.util.HashMap;
 import java.util.Scanner;
 
 import org.json.JSONArray;
@@ -19,6 +20,8 @@ public class SendMessages {
 	private static final String fileName = "PHS Lab Days - Form Responses 1.csv";
 	private static final String storedFileName = "src/numbers.txt";
 	
+	private final HashMap<Integer, Person> theMap = new HashMap<Integer, Person>();
+	
 	private final String username, password, phone;
 	private final SendGrid sendgrid;
 	
@@ -30,29 +33,54 @@ public class SendMessages {
 		this.password = properties.getProperty("password");
 		this.phone = properties.getProperty("phone") + Variables.VERIZON;
 		this.sendgrid = new SendGrid(username, password);
+		
+		updatePeopleFromFile();
+		sendWelcome(getNewPeople());
 	}
 	
-	public Person[] getPeopleFromFile() { 
+	/** Reads through all people from csv file
+	 * If we already have them, don't do anything
+	 * If not, add them to a list to return and add them to the hashmap*/
+	private Person[] getNewPeople() {
+		final LinkedList<Person> newPeople = new LinkedList<Person>();
+		final Person[] csvPeople = getPeople();
+		
+		for(Person person : csvPeople) { 
+			if(!theMap.containsKey(person.hashCode())) { 
+				newPeople.add(person);
+				theMap.put(person.hashCode(), person);
+			}
+		}
+		return newPeople.toArray(new Person[newPeople.size()]);
+	}
+	
+	/** Gets all the people from the textfile
+	 * Updates the global hashmap with them */
+	private void updatePeopleFromFile() { 
 		try { 
 			final StringBuilder allData = new StringBuilder("");
+			final LinkedList<Person> allPeople = new LinkedList<Person>();
 			final BufferedReader theReader = new BufferedReader(new FileReader(storedFileName));
 			
 			while(theReader.ready()) { 
 				allData.append(theReader.readLine());
 			}
 			
-			JSONObject theObj = new JSONObject(allData.toString());
+			final JSONObject theObj = new JSONObject(allData.toString());
+			final JSONArray peopleArray = theObj.getJSONArray("people");
 			
-			JSONArray peopleArray = theObj.getJSONArray("people");
+			for(int i = 0; i < peopleArray.length(); i++) { 
+				allPeople.add(Person.getPerson(peopleArray.getJSONObject(i)));
+			}
 			
-			
-			
+			while(allPeople.size() >= 0) { 
+				final Person tP = allPeople.removeFirst();
+				theMap.put(tP.hashCode(), tP);
+			}
 		}
 		catch(Exception e) { 
 			System.out.println(e.toString());
 		}
-		
-		return new Person[]{};
 	}
 	
 	public void writeToFile() { 
@@ -101,11 +129,9 @@ public class SendMessages {
 		}
 	}
 	
-	public void sendWelcome() { 
-		final Person[] thePeople = getPeople();
-		
+	private void sendWelcome(final Person[] newPeople) { 
 		Email email;
-		for(Person person : thePeople) { 
+		for(Person person : newPeople) { 
 			email = new Email();
 		    email.addTo(person.getPhoneNumber() + person.getCarrier());
 		    email.setFrom("dsouzarc@gmail.com");
@@ -124,9 +150,7 @@ public class SendMessages {
 
 	public static void main(String[] ryan) throws Exception {
 		final SendMessages theSender = new SendMessages();
-		theSender.sendWelcome();
 		theSender.writeToFile();
-		theSender.getPeopleFromFile();
 	}
 	
 	private static Person[] getPeople() { 
