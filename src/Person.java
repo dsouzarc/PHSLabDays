@@ -28,18 +28,24 @@ public class Person {
 		this.everyDay = everyDay;
 	}
 	
-	public String getMessage() { 
-		final StringBuilder text = new StringBuilder(message);
-		
-		//Good Morning Ryan! or Good Morning!
-		text.append(name.length() > 1 ? " " + name + "! ": "! ");
-		
+	public static String getLetterDay() { 
 		if(letterDay == 'A') { 
-			text.append("Today is an '" + letterDay + "' day. ");
+			return "Today is an '" + letterDay + "' day. ";
 		}
 		else { 
-			text.append("Today is a '" + letterDay + "' day. ");
+			return "Today is a '" + letterDay + "' day. ";
 		}
+	}
+	
+	public String getGreeting() { 
+		//Good Morning Ryan! or Good Morning!
+		return message + (name.length() > 1 ? " " + name + "! ": "! ");
+	}
+	
+	public String getMessage() { 
+		final StringBuilder text = new StringBuilder("");
+		
+		text.append(getLetterDay());
 
 		//Add lab day info.
 		if(scienceDay.isLabDay(letterDay)) { 

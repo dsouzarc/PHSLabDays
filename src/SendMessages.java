@@ -125,14 +125,15 @@ public class SendMessages {
 		Email email;
 		for(Integer key : peopleKey) {
 			final Person person = theMap.get(key);
+			System.out.println("HERE: " + person.toString());
 			email = new Email();
 		    email.addTo(person.getPhoneNumber() + person.getCarrier());
 		    email.setFrom("dsouzarc@gmail.com");
-		    //email.setSubject("Hello World");
-		    email.setText(person.getMessage() + "h");
+		    email.setSubject(person.getGreeting());
+		    email.setText(person.getMessage());
 			try {
 				sendgrid.send(email);
-				System.out.println("Sent! " + person.getPhoneNumber());
+				System.out.println("Sent Daily! " + person.getPhoneNumber());
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.out.println("Error" + e.toString() + "\t" + person.getPhoneNumber());
@@ -151,7 +152,7 @@ public class SendMessages {
 		    						"or (609) 915 4930");
 			try {
 				sendgrid.send(email);
-				System.out.println("Sent! " + person.getPhoneNumber());
+				System.out.println("Sent Welcome! " + person.getPhoneNumber());
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.out.println("Error" + e.toString() + "\t" + person.getPhoneNumber());
