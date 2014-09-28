@@ -47,7 +47,7 @@ public class SendMessages {
 	 * If not, add them to a list to return and add them to the hashmap*/
 	private LinkedList<Person> getNewPeople() {
 		final LinkedList<Person> newPeople = new LinkedList<Person>();
-		final Person[] csvPeople = getPeople();
+		final LinkedList<Person> csvPeople = getPeople();
 		
 		for(Person person : csvPeople) { 
 			if(!theMap.containsKey(person.hashCode())) { 
@@ -161,9 +161,9 @@ public class SendMessages {
 		final SendMessages theSender = new SendMessages();
 	}
 	
-	private static Person[] getPeople() { 
+	private static LinkedList<Person> getPeople() { 
+		final LinkedList<Person> thePeople = new LinkedList<Person>();
 		try { 
-			final LinkedList<Person> thePeople = new LinkedList<Person>();
 			
 			final BufferedReader theReader = 
 					new BufferedReader(new FileReader(fileName));
@@ -175,32 +175,35 @@ public class SendMessages {
 				final String line = theReader.readLine() + ", ";
 				final String[] data = (line.replace(", ", "|").replace(",,", ", ,").split(","));
 				
+				System.out.println(line);
+				for(int i = 0; i < data.length; i++) { 
+					System.out.println(i + "\t" + data[i]);
+				}
+				
 				final String name = data[1];
 				final String number = formatNumber(data[2]);
 				final String carrier = assignCarrier(data[3].toLowerCase());
 				final boolean everyday = data[4].contains("Every");
-				final String science1 = data[5];
-				final char[] labDays1 = getLabDays(data[6]);
-				final String science2 = data[7];
-				final char[] labDays2 = getLabDays(data[8]);
-				final String misc = data[9];
-				final char[] miscDays = getLabDays(data[10]);
+				final String science = data[5];
+				final char[] labDays = getLabDays(data[6]);
+				final char[] miscDays = getLabDays(data[7]);
+				final String misc = data[8];
 				
 				final Person person = new Person(name, number, carrier, 
-						new Science[]{new Science(science1, labDays1), new Science(science2, labDays2)}, 
+						new Science(science, labDays), 
 						new Science(misc, miscDays), everyday);
+				
+				System.out.println(person.toString());
 				
 				if(number.length() > 7 && carrier.length() > 4) { 
 					thePeople.add(person);
 				}
 			}
-			
-			return thePeople.toArray(new Person[thePeople.size()]);
 		}
 		catch(Exception e) { 
 			System.out.println("Error: " + e.toString());
 		}
-		return null;
+		return thePeople;
 	}
 	
 	private static String formatNumber(String text) { 
@@ -213,19 +216,24 @@ public class SendMessages {
 	}
 	
 	private static char[] getLabDays(String text) { 
-		text = text.replace("\"", "");
+		final LinkedList<Character> theChars = new LinkedList<Character>();
 		
-		try { 
-			final String[] days = text.split("|");
-			final char[] chars = new char[days.length];
-			for(int i = 0; i < days.length; i++) { 
-				chars[i] = days[i].charAt(0);
+		for(Character theChar : text.toCharArray()) { 
+			final int charVal = (int) theChar;
+			
+			//Between 'A' and 'G'
+			if(charVal >= 65 && charVal <= 71) { 
+				theChars.add(theChar);
 			}
-			return chars;
 		}
-		catch(Exception e) { 
-			return null;
+		
+		final char[] answer = new char[theChars.size()];
+		int counter = 0;
+		for(Character c : theChars) { 
+			answer[counter] = c;
+			counter++;
 		}
+		return answer;
 	}
 
 	private static String assignCarrier(final String name) { 
