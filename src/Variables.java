@@ -1,8 +1,8 @@
 /** To hold common variables */
 
 public class Variables {
-	
-	//CARRIERS
+
+	// CARRIERS
 	public static final String VERIZON = "@vtext.com";
 	public static final String ATT = "@txt.att.net";
 	public static final String TMOBILE = "@tmomail.net";
