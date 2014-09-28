@@ -78,7 +78,7 @@ public class Person {
 		theObj.put("carrier", thePerson.getCarrier());
 		theObj.put("everyday", thePerson.getEveryday());
 		theObj.put("science", thePerson.getScience().getJSON());
-		theObj.put("misc", thePerson.getMisc());
+		theObj.put("misc", thePerson.getMisc().getJSON());
 		return theObj;
 	}
 	
@@ -94,7 +94,7 @@ public class Person {
 	
 	@Override
 	public String toString() {
-		return "Person [name=" + name + ", phoneNumber=" + phoneNumber
+		return "Person: " + name + ", phoneNumber=" + phoneNumber
 				+ ", carrier=" + carrier + ", scienceClasses="
 				+ scienceDay.toString() + ", misc=" + misc
 				+ ", everyDay=" + everyDay + "]";

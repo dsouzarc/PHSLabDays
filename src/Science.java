@@ -1,4 +1,6 @@
 import java.util.Arrays;
+import java.util.LinkedList;
+
 import org.json.JSONObject;
 import org.json.JSONArray;
 
@@ -31,22 +33,33 @@ public class Science {
 		return false;
 	}
 	
-	public static String lettersToString(final char[] labDays) { 
-		String result = "";
-		
+	public String lettersToString() { 
+		String r = "";
 		for(char c : labDays) { 
-			result = String.valueOf(c) + "|";
+			r += c + "<";
 		}
-		return result.substring(0, result.length()-1);
+		return r;
 	}
 	
 	public static char[] stringToLetters(final String string) { 
-		final String[] semi = string.split("|");
-		final char[] result = new char[semi.length];
-		for(int i = 0; i < semi.length; i++) { 
-			result[i] = semi[i].charAt(0);
+		final LinkedList<Character> theChars = new LinkedList<Character>();
+		
+		for(Character theChar : string.toCharArray()) { 
+			final int charVal = (int) theChar;
+			
+			//Between 'A' and 'G'
+			if(charVal >= 65 && charVal <= 71) { 
+				theChars.add(theChar);
+			}
 		}
-		return result;
+		
+		final char[] answer = new char[theChars.size()];
+		int counter = 0;
+		for(Character c : theChars) { 
+			answer[counter] = c;
+			counter++;
+		}
+		return answer;
 	}
 	
 	public static Science getScience(final JSONObject theObject) { 
@@ -59,15 +72,12 @@ public class Science {
 		}
 	}
 	
-	public JSONObject getJSON() { 
-		return getJSON(this);
-	}
 	
-	public static JSONObject getJSON(final Science theScience) { 
+	public JSONObject getJSON() { 
 		try { 
 			JSONObject theObj = new JSONObject();
-			theObj.put("name", theScience.getScienceName());
-			theObj.put("letters", lettersToString(theScience.getLabDays()));
+			theObj.put("name", getScienceName());
+			theObj.put("letters", lettersToString());
 			return theObj;
 		}
 		catch(Exception e) { 
@@ -77,7 +87,7 @@ public class Science {
 	
 	@Override
 	public String toString() {
-		return "Science [scienceName=" + scienceName + ", labDays="
-				+ Arrays.toString(labDays) + "]";
+		return "Science: scienceName=" + scienceName + ", labDays="
+				+ Arrays.toString(labDays) + " days";
 	}
 }

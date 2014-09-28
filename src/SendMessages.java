@@ -38,6 +38,8 @@ public class SendMessages {
 		
 		updatePeopleFromTextFile(); //Gets the people in textfile
 		sendWelcome(getNewPeople()); //Adds new people to list, sends welcome message
+		theMap.clear();
+		getNewPeople();
 		saveEveryone();
 		sendDaily();
 	}
@@ -175,10 +177,10 @@ public class SendMessages {
 				final String line = theReader.readLine() + ", ";
 				final String[] data = (line.replace(", ", "|").replace(",,", ", ,").split(","));
 				
-				System.out.println(line);
+				/*System.out.println(line);
 				for(int i = 0; i < data.length; i++) { 
 					System.out.println(i + "\t" + data[i]);
-				}
+				}*/
 				
 				final String name = data[1];
 				final String number = formatNumber(data[2]);
