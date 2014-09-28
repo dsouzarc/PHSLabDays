@@ -11,36 +11,69 @@ import com.sendgrid.SendGrid.Email;
 public class SendMessages {
 	private static final Scanner theScanner = new Scanner(System.in);
 	private static final String fileName = "PHS Lab Days - Form Responses 1.csv";
-
-	public static void main(String[] ryan) throws Exception {
+	
+	private final String username, password, phone;
+	private final SendGrid sendgrid;
+	
+	public SendMessages() throws Exception { 
 		final Properties properties = new Properties();
 		properties.load(new FileInputStream("information.properties"));
 
-		final String username = properties.getProperty("username");
-		final String password = properties.getProperty("password");
-		final String phone = properties.getProperty("phone") + Variables.VERIZON;
+		this.username = properties.getProperty("username");
+		this.password = properties.getProperty("password");
+		this.phone = properties.getProperty("phone") + Variables.VERIZON;
+		this.sendgrid = new SendGrid(username, password);
+	}
+	
+	public void sendDaily() { 
+		Person.letterDay = 'A';
+		Person.message = "Good Morning"; //Can also be 'hi!'
+		Person.numSchoolDaysOver = 16;
+		Person.noSchool = "Fri, Oct 3rd, No School";
 		
 		final Person[] thePeople = getPeople();
 		
+		Email email;
 		for(Person person : thePeople) { 
-			System.out.println(person.getMessage());
+			email = new Email();
+		    email.addTo(person.getPhoneNumber() + person.getCarrier());
+		    email.setFrom("dsouzarc@gmail.com");
+		    //email.setSubject("Hello World");
+		    email.setText(person.getMessage() + "h");
+			try {
+				sendgrid.send(email);
+				System.out.println("Sent! " + person.getPhoneNumber());
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.out.println("Error" + e.toString() + "\t" + person.getPhoneNumber());
+			}
 		}
-
-		final SendGrid sendgrid = new SendGrid(username, password);
-
-		Email email = new Email();
-		email.addTo(phone);
-		// email.addToName("What");
-		email.setFrom("dsouzarc@gmail.com");
-		email.setSubject("Augustus?");
-		email.setText("If you get this, text me (Ryan D'souza)");
-		try {
-			//sendgrid.send(email);
-			System.out.println("Sent!");
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("Error" + e.toString());
+	}
+	
+	public void sendWelcome() { 
+		final Person[] thePeople = getPeople();
+		
+		Email email;
+		for(Person person : thePeople) { 
+			email = new Email();
+		    email.addTo(person.getPhoneNumber() + person.getCarrier());
+		    email.setFrom("dsouzarc@gmail.com");
+		    email.setSubject("Welcome to PHS Lab Days");
+		    email.setText("If you have any questions, please contact Ryan D'souza @ dsouzarc@gmail.com " + 
+		    						"or (609) 915 4930");
+			try {
+				sendgrid.send(email);
+				System.out.println("Sent! " + person.getPhoneNumber());
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.out.println("Error" + e.toString() + "\t" + person.getPhoneNumber());
+			}
 		}
+	}
+
+	public static void main(String[] ryan) throws Exception {
+		final SendMessages theSender = new SendMessages();
+		theSender.sendWelcome();
 	}
 	
 	private static Person[] getPeople() { 
@@ -55,13 +88,7 @@ public class SendMessages {
 			
 			while(theReader.ready()) { 
 				final String line = theReader.readLine() + ", ";
-				System.out.println(line);
 				final String[] data = (line.replace(", ", "|").replace(",,", ", ,").split(","));
-				System.out.println(data.length);
-				
-				/*for(int i = 0; i < data.length; i++) { 
-					System.out.println(i + "\t" + data[i]);
-				}*/
 				
 				final String name = data[1];
 				final String number = formatNumber(data[2]);
@@ -77,7 +104,10 @@ public class SendMessages {
 				final Person person = new Person(name, number, carrier, 
 						new Science[]{new Science(science1, labDays1), new Science(science2, labDays2)}, 
 						new Science(misc, miscDays), everyday);
-				thePeople.add(person);
+				
+				if(number.length() > 7 && carrier.length() > 4) { 
+					thePeople.add(person);
+				}
 			}
 			
 			return thePeople.toArray(new Person[thePeople.size()]);
