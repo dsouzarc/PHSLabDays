@@ -54,6 +54,10 @@ public class Science {
 				stringToLetters(theObject.getString("letters")));
 	}
 	
+	public JSONObject getJSON() { 
+		return getJSON(this);
+	}
+	
 	public static JSONObject getJSON(final Science theScience) { 
 		JSONObject theObj = new JSONObject("science");
 		theObj.put("name", theScience.getScienceName());

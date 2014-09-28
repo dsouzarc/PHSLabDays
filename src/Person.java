@@ -64,11 +64,35 @@ public class Person {
 		return text.toString();
 	}
 	
+	public boolean getEveryday() { 
+		return this.everyDay;
+	}
+	
+	public JSONObject getJSON() { 
+		return getJSON(this);
+	}
+	
 	public static JSONObject getJSON(final Person thePerson) { 
 		final JSONObject theObj = new JSONObject("person");
-		
-		
-		return null;
+		theObj.put("name", thePerson.getName());
+		theObj.put("phone", thePerson.getPhoneNumber());
+		theObj.put("carrier", thePerson.getCarrier());
+		theObj.put("everyday", thePerson.getEveryday());
+		theObj.put("science1", thePerson.getScienceClasses()[0].getJSON());
+		theObj.put("science2", thePerson.getScienceClasses()[1].getJSON());
+		theObj.put("misc", thePerson.getMisc());
+		return theObj;
+	}
+	
+	public static Person getPerson(final JSONObject theObj) { 
+		final String name = theObj.getString("name");
+		final String phone = theObj.getString("phone");
+		final String carrier = theObj.getString("carrier");
+		final boolean everyday = theObj.getBoolean("everyday");
+		final Science sci1 = Science.getScience(theObj.getJSONObject("science1"));
+		final Science sci2 = Science.getScience(theObj.getJSONObject("science2"));
+		final Science misc = Science.getScience(theObj.getJSONObject("misc"));
+		return new Person(name, phone, carrier, new Science[]{sci1, sci2}, misc, everyday);
 	}
 	
 	@Override
