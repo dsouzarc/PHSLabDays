@@ -1,4 +1,6 @@
 import java.util.Arrays;
+import org.json.JSONObject;
+import org.json.JSONArray;
 
 public class Science { 
 	private final String scienceName;
@@ -27,6 +29,36 @@ public class Science {
 			}
 		}
 		return false;
+	}
+	
+	public static String lettersToString(final char[] labDays) { 
+		String result = "";
+		
+		for(char c : labDays) { 
+			result = String.valueOf(c) + "|";
+		}
+		return result.substring(0, result.length()-1);
+	}
+	
+	public static char[] stringToLetters(final String string) { 
+		final String[] semi = string.split("|");
+		final char[] result = new char[semi.length];
+		for(int i = 0; i < semi.length; i++) { 
+			result[i] = semi[i].charAt(0);
+		}
+		return result;
+	}
+	
+	public static Science getScience(final JSONObject theObject) { 
+		return new Science(theObject.getString("name"), 
+				stringToLetters(theObject.getString("letters")));
+	}
+	
+	public static JSONObject getJSON(final Science theScience) { 
+		JSONObject theObj = new JSONObject("science");
+		theObj.put("name", theScience.getScienceName());
+		theObj.put("letters", lettersToString(theScience.getLabDays()));
+		return theObj;
 	}
 	
 	@Override

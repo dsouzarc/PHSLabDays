@@ -64,6 +64,13 @@ public class Person {
 		return text.toString();
 	}
 	
+	public static JSONObject getJSON(final Person thePerson) { 
+		final JSONObject theObj = new JSONObject("person");
+		
+		
+		return null;
+	}
+	
 	@Override
 	public String toString() {
 		return "Person [name=" + name + ", phoneNumber=" + phoneNumber
@@ -80,6 +87,11 @@ public class Person {
 		
 		final Person otherP = (Person) other;
 		return this.phoneNumber.equals(otherP.getPhoneNumber());
+	}
+	
+	@Override
+	public int hashCode() { 
+		return (this.name + this.carrier).hashCode();
 	}
 	
 	public String getName() {
