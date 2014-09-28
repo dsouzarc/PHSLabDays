@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.Properties;
 import java.util.HashMap;
 import java.util.Scanner;
+import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -16,6 +17,7 @@ import com.sendgrid.SendGrid;
 import com.sendgrid.SendGrid.Email;
  
 public class SendMessages {
+	
 	private static final Scanner theScanner = new Scanner(System.in);
 	private static final String fileName = "PHS Lab Days - Form Responses 1.csv";
 	private static final String storedFileName = "src/numbers.txt";
@@ -34,14 +36,16 @@ public class SendMessages {
 		this.phone = properties.getProperty("phone") + Variables.VERIZON;
 		this.sendgrid = new SendGrid(username, password);
 		
-		updatePeopleFromFile();
-		sendWelcome(getNewPeople());
+		updatePeopleFromTextFile(); //Gets the people in textfile
+		sendWelcome(getNewPeople()); //Adds new people to list, sends welcome message
+		saveEveryone();
+		sendDaily();
 	}
 	
 	/** Reads through all people from csv file
 	 * If we already have them, don't do anything
 	 * If not, add them to a list to return and add them to the hashmap*/
-	private Person[] getNewPeople() {
+	private LinkedList<Person> getNewPeople() {
 		final LinkedList<Person> newPeople = new LinkedList<Person>();
 		final Person[] csvPeople = getPeople();
 		
@@ -51,12 +55,12 @@ public class SendMessages {
 				theMap.put(person.hashCode(), person);
 			}
 		}
-		return newPeople.toArray(new Person[newPeople.size()]);
+		return newPeople;
 	}
 	
 	/** Gets all the people from the textfile
 	 * Updates the global hashmap with them */
-	private void updatePeopleFromFile() { 
+	private void updatePeopleFromTextFile() { 
 		try { 
 			final StringBuilder allData = new StringBuilder("");
 			final LinkedList<Person> allPeople = new LinkedList<Person>();
@@ -83,15 +87,18 @@ public class SendMessages {
 		}
 	}
 	
-	public void writeToFile() { 
-		File file = new File(storedFileName);
-		final Person[] people = getPeople();
+	/** Saves everyone in HashMap as JSONObjects in text file*/
+	public void saveEveryone() { 
+		final File file = new File(storedFileName);
 		final JSONObject allPeople = new JSONObject();
 		final JSONArray info = new JSONArray();
 		
-		for(Person p : people) { 
-			info.put(p.getJSON());
+		Set<Integer> peopleKey = theMap.keySet();
+		
+		for(Integer key : peopleKey) {
+			info.put(theMap.get(key).getJSON());
 		}
+		
 		allPeople.put("people", info);
 		
 		try { 
@@ -104,16 +111,18 @@ public class SendMessages {
 		}
 	}
 	
+	/** Sends a text to everyone who needs it */
 	public void sendDaily() { 
 		Person.letterDay = 'A';
 		Person.message = "Good Morning"; //Can also be 'hi!'
 		Person.numSchoolDaysOver = 16;
 		Person.noSchool = "Fri, Oct 3rd, No School";
 		
-		final Person[] thePeople = getPeople();
+		final Set<Integer> peopleKey = theMap.keySet();
 		
 		Email email;
-		for(Person person : thePeople) { 
+		for(Integer key : peopleKey) {
+			final Person person = theMap.get(key);
 			email = new Email();
 		    email.addTo(person.getPhoneNumber() + person.getCarrier());
 		    email.setFrom("dsouzarc@gmail.com");
@@ -129,7 +138,7 @@ public class SendMessages {
 		}
 	}
 	
-	private void sendWelcome(final Person[] newPeople) { 
+	private void sendWelcome(final LinkedList<Person> newPeople) { 
 		Email email;
 		for(Person person : newPeople) { 
 			email = new Email();
@@ -150,7 +159,6 @@ public class SendMessages {
 
 	public static void main(String[] ryan) throws Exception {
 		final SendMessages theSender = new SendMessages();
-		theSender.writeToFile();
 	}
 	
 	private static Person[] getPeople() { 
