@@ -8,6 +8,7 @@ import java.util.Scanner;
 
 public class SendMessages {
 	private static final Scanner theScanner = new Scanner(System.in);
+	private static final String fileName = "PHS Lab Days - Form Responses 1.csv";
 
 	public static void main(String[] ryan) throws Exception {
 		final Properties properties = new Properties();
