@@ -11,6 +11,7 @@ import com.sendgrid.SendGrid.Email;
 public class SendMessages {
 	private static final Scanner theScanner = new Scanner(System.in);
 	private static final String fileName = "PHS Lab Days - Form Responses 1.csv";
+	private static final String storedFileName = "numbers.txt";
 	
 	private final String username, password, phone;
 	private final SendGrid sendgrid;
