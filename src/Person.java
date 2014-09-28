@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -53,6 +54,24 @@ public class Person {
 		}
 		
 		return text.toString();
+	}
+	
+	@Override
+	public String toString() {
+		return "Person [name=" + name + ", phoneNumber=" + phoneNumber
+				+ ", carrier=" + carrier + ", scienceClasses="
+				+ Arrays.toString(scienceClasses) + ", misc=" + misc
+				+ ", everyDay=" + everyDay + "]";
+	}
+
+	@Override
+	public boolean equals(Object other) { 
+		if(!(other instanceof Person)) { 
+			return false;
+		}
+		
+		final Person otherP = (Person) other;
+		return this.phoneNumber.equals(otherP.getPhoneNumber());
 	}
 	
 	public String getName() {

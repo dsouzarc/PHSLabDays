@@ -25,6 +25,11 @@ public class SendMessages {
 		final String phone = properties.getProperty("phone")
 				+ Variables.VERIZON;
 		
+		final Person[] thePeople = getPeople();
+		
+		for(Person person : thePeople) { 
+			System.out.println(person.toString());
+		}
 		
 
 		/*final SendGrid sendgrid = new SendGrid(username, password);
