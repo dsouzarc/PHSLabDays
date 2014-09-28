@@ -2,6 +2,9 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import org.json.JSONObject;
+import org.json.JSONArray;
+
 public class Person {
 	private final String name, phoneNumber, carrier;
 	private final Science[] scienceClasses;
