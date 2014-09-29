@@ -39,7 +39,24 @@ public class Person {
 	
 	public String getGreeting() { 
 		//Good Morning Ryan! or Good Morning!
-		return message + (name.length() > 1 ? " " + name + "! ": "! ");
+		String text = message;
+		
+		//If there is no name, return Good Morning!
+		if(name.length() <= 1) { 
+			return message + "! ";
+		}
+		
+		//If there is a name with space (first and last)
+		if(name.contains(" ")) { 
+			//Message = Good Morning Ryan!
+			message += " " +  name.substring(0, name.indexOf(" "));
+		}
+		//Default
+		else { 
+			message += name;
+		}
+		//Good Morning Ryan!
+		return message + "! ";
 	}
 	
 	public String getMessage() { 
