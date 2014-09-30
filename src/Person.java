@@ -13,9 +13,9 @@ public class Person {
 	
 	public static final Calendar todayCalendar = new GregorianCalendar();
 	
-	public static char letterDay = 'A';
+	public static char letterDay = 'B';
 	public static String message = "Good Morning"; //Can also be 'hi!'
-	public static int numSchoolDaysOver = 16;
+	public static int numSchoolDaysOver = 17;
 	public static String noSchool = "Fri, Oct 3rd, No School";
 	
 	public Person(final String name, final String phoneNumber, final String carrier, 
@@ -42,7 +42,7 @@ public class Person {
 		String text = message;
 		
 		//If there is no name, return Good Morning!
-		if(name.length() <= 1) { 
+		if(name.length() <= 1 || name.length() > 10) { 
 			return message + "! ";
 		}
 		
@@ -117,7 +117,7 @@ public class Person {
 	
 	@Override
 	public String toString() {
-		return "Person: " + name + ", phoneNumber=" + phoneNumber
+		return "Person String: " + name + ", phoneNumber=" + phoneNumber
 				+ ", carrier=" + carrier + ", scienceClasses="
 				+ scienceDay.toString() + ", misc=" + misc
 				+ ", everyDay=" + everyDay + "]";

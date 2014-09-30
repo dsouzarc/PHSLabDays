@@ -19,7 +19,7 @@ import com.sendgrid.SendGrid.Email;
 public class SendMessages {
 	
 	private static final Scanner theScanner = new Scanner(System.in);
-	private static final String fileName = "PHS Lab Days - Form Responses 1.csv";
+	private static final String fileName = "PHS Lab Days (Responses) - Form Responses 1.csv";
 	private static final String storedFileName = "src/numbers.txt";
 	
 	private final HashMap<Integer, Person> theMap = new HashMap<Integer, Person>();
@@ -42,6 +42,27 @@ public class SendMessages {
 		getNewPeople();
 		saveEveryone();
 		sendDaily();
+	}
+	
+	private void sendMessage(final String subject, final String message) { 
+		Email email;
+		final Set<Integer> peopleKey = theMap.keySet();
+		for(Integer key : peopleKey) {
+			final Person person = theMap.get(key);
+			System.out.println("HERE: " + person.toString());
+			email = new Email();
+		    email.addTo(person.getPhoneNumber() + person.getCarrier());
+		    email.setFrom("dsouzarc@gmail.com");
+		    email.setSubject(message);
+		    email.setText(subject);
+			try {
+				sendgrid.send(email);
+				System.out.println("Sent Daily! " + person.getPhoneNumber() + person.getGreeting());
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.out.println("Error" + e.toString() + "\t" + person.getPhoneNumber());
+			}
+		}
 	}
 	
 	/** Reads through all people from csv file
@@ -115,9 +136,9 @@ public class SendMessages {
 	
 	/** Sends a text to everyone who needs it */
 	public void sendDaily() { 
-		Person.letterDay = 'A';
+		Person.letterDay = 'B';
 		Person.message = "Good Morning"; //Can also be 'hi!'
-		Person.numSchoolDaysOver = 16;
+		Person.numSchoolDaysOver = 17;
 		Person.noSchool = "Fri, Oct 3rd, No School";
 		
 		final Set<Integer> peopleKey = theMap.keySet();
@@ -132,8 +153,8 @@ public class SendMessages {
 		    email.setSubject(person.getGreeting());
 		    email.setText(person.getMessage());
 			try {
-				sendgrid.send(email);
-				System.out.println("Sent Daily! " + person.getPhoneNumber());
+				//sendgrid.send(email);
+				System.out.println("Sent Daily! " + person.getPhoneNumber() + person.getGreeting());
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.out.println("Error" + e.toString() + "\t" + person.getPhoneNumber());
@@ -151,7 +172,7 @@ public class SendMessages {
 		    email.setText("If you have any questions, please contact Ryan D'souza @ dsouzarc@gmail.com " + 
 		    						"or (609) 915 4930");
 			try {
-				sendgrid.send(email);
+				//sendgrid.send(email);
 				System.out.println("Sent Welcome! " + person.getPhoneNumber());
 			} catch (Exception e) {
 				e.printStackTrace();
