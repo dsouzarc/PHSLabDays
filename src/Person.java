@@ -42,21 +42,19 @@ public class Person {
 		String text = message;
 		
 		//If there is no name, return Good Morning!
-		if(name.length() <= 1 || name.length() > 10) { 
+		if(name.length() <= 1) { 
 			return message + "! ";
 		}
 		
 		//If there is a name with space (first and last)
 		if(name.contains(" ")) { 
 			//Message = Good Morning Ryan!
-			message += " " +  name.substring(0, name.indexOf(" "));
+			return text +  " " +  name.substring(0, name.indexOf(" ")) + "! ";
 		}
 		//Default
 		else { 
-			message += name;
+			return text + " " + name + "! ";
 		}
-		//Good Morning Ryan!
-		return message + "! ";
 	}
 	
 	public String getMessage() { 

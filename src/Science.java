@@ -81,13 +81,14 @@ public class Science {
 			return theObj;
 		}
 		catch(Exception e) { 
+			e.printStackTrace();
 			return null;
 		}
 	}
 	
 	@Override
 	public String toString() {
-		return "Science: scienceName=" + scienceName + ", labDays="
+		return "Science String: scienceName=" + scienceName + ", labDays="
 				+ Arrays.toString(labDays) + " days";
 	}
 }

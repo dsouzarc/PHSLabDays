@@ -42,6 +42,7 @@ public class SendMessages {
 		getNewPeople();
 		saveEveryone();
 		sendDaily();
+		
 	}
 	
 	private void sendMessage(final String subject, final String message) { 
@@ -60,7 +61,7 @@ public class SendMessages {
 				System.out.println("Sent Daily! " + person.getPhoneNumber() + person.getGreeting());
 			} catch (Exception e) {
 				e.printStackTrace();
-				System.out.println("Error" + e.toString() + "\t" + person.getPhoneNumber());
+				System.out.println("Error sending message: " + e.toString() + "\t" + person.getPhoneNumber());
 			}
 		}
 	}
@@ -98,15 +99,17 @@ public class SendMessages {
 			
 			for(int i = 0; i < peopleArray.length(); i++) { 
 				allPeople.add(Person.getPerson(peopleArray.getJSONObject(i)));
+				System.out.println("From: " + allPeople.get(i).getPhoneNumber() + ": " + allPeople.get(i).getGreeting());
 			}
 			
-			while(allPeople.size() >= 0) { 
-				final Person tP = allPeople.removeFirst();
+			while(allPeople.size() > 0) { 
+				final Person tP = allPeople.remove(0);
 				theMap.put(tP.hashCode(), tP);
 			}
 		}
 		catch(Exception e) { 
-			System.out.println(e.toString());
+			e.printStackTrace();
+			System.out.println("Error updating people from textfile: " + e.toString());
 		}
 	}
 	
@@ -130,7 +133,8 @@ public class SendMessages {
 			theWriter.close();
 		}
 		catch(Exception e) { 
-			System.out.println("Error writing: " + e.toString());
+			e.printStackTrace();
+			System.out.println("Error saving: " + e.toString());
 		}
 	}
 	
@@ -157,7 +161,7 @@ public class SendMessages {
 				System.out.println("Sent Daily! " + person.getPhoneNumber() + person.getGreeting());
 			} catch (Exception e) {
 				e.printStackTrace();
-				System.out.println("Error" + e.toString() + "\t" + person.getPhoneNumber());
+				System.out.println("Error sending daily" + e.toString() + "\t" + person.getPhoneNumber());
 			}
 		}
 	}
@@ -176,7 +180,7 @@ public class SendMessages {
 				System.out.println("Sent Welcome! " + person.getPhoneNumber());
 			} catch (Exception e) {
 				e.printStackTrace();
-				System.out.println("Error" + e.toString() + "\t" + person.getPhoneNumber());
+				System.out.println("Error sending welcome" + e.toString() + "\t" + person.getPhoneNumber());
 			}
 		}
 	}
@@ -217,7 +221,7 @@ public class SendMessages {
 						new Science(science, labDays), 
 						new Science(misc, miscDays), everyday);
 				
-				System.out.println(person.toString());
+				System.out.println("From file: " + person.toString());
 				
 				if(number.length() > 7 && carrier.length() > 4) { 
 					thePeople.add(person);
@@ -225,7 +229,8 @@ public class SendMessages {
 			}
 		}
 		catch(Exception e) { 
-			System.out.println("Error: " + e.toString());
+			e.printStackTrace();
+			System.out.println("Error reading from textfile: " + e.toString());
 		}
 		return thePeople;
 	}
