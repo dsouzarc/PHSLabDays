@@ -16,6 +16,8 @@ import org.json.JSONObject;
 import com.sendgrid.SendGrid;
 import com.sendgrid.SendGrid.Email;
 
+//https://docs.google.com/spreadsheets/d/1OpZPyzOHbBeDHrFaxZbD-5ASiZKM7-U-JNl7PUNXYw4/edit#gid=1828455022
+
 public class SendMessages {
 
 	private static final Scanner theScanner = new Scanner(System.in);
@@ -59,8 +61,8 @@ public class SendMessages {
 			email.setSubject(message);
 			email.setText(subject);
 			try {
-				sendgrid.send(email);
-				System.out.println("Sent Daily! " + person.getPhoneNumber()
+				//sendgrid.send(email);
+				System.out.println("Sent Message! " + person.getPhoneNumber()
 						+ person.getGreeting());
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -146,9 +148,9 @@ public class SendMessages {
 
 	/** Sends a text to everyone who needs it */
 	public void sendDaily() {
-		Person.letterDay = 'B';
-		Person.message = "Good Morning"; // Can also be 'hi!'
-		Person.numSchoolDaysOver = 17;
+		Person.letterDay = 'C';
+		Person.message = "Salve"; // Can also be 'hi!'
+		Person.numSchoolDaysOver = 18;
 		Person.noSchool = "Fri, Oct 3rd, No School";
 
 		final Set<Integer> peopleKey = theMap.keySet();
@@ -156,20 +158,23 @@ public class SendMessages {
 		Email email;
 		for (Integer key : peopleKey) {
 			final Person person = theMap.get(key);
-			System.out.println("HERE: " + person.toString());
-			email = new Email();
-			email.addTo(person.getPhoneNumber() + person.getCarrier());
-			email.setFrom("dsouzarc@gmail.com");
-			email.setSubject(person.getGreeting());
-			email.setText(person.getMessage());
-			try {
-				// sendgrid.send(email);
-				System.out.println("Sent Daily! " + person.getPhoneNumber()
-						+ person.getGreeting());
-			} catch (Exception e) {
-				e.printStackTrace();
-				System.out.println("Error sending daily" + e.toString() + "\t"
-						+ person.getPhoneNumber());
+			
+			if(person.shouldGetMessage()) { 
+				System.out.println("HERE: " + person.toString());
+				email = new Email();
+				email.addTo(person.getPhoneNumber() + person.getCarrier());
+				email.setFrom("dsouzarc@gmail.com");
+				email.setSubject(person.getGreeting());
+				email.setText(person.getMessage());
+				try {
+					sendgrid.send(email);
+					System.out.println("Sent Daily! " + person.getPhoneNumber()
+							+ person.getGreeting() + "\t" + person.getMessage());
+				} catch (Exception e) {
+					e.printStackTrace();
+					System.out.println("Error sending daily" + e.toString() + "\t"
+							+ person.getPhoneNumber());
+				}
 			}
 		}
 	}
@@ -184,7 +189,7 @@ public class SendMessages {
 			email.setText("If you have any questions, please contact Ryan D'souza @ dsouzarc@gmail.com "
 					+ "or (609) 915 4930");
 			try {
-				// sendgrid.send(email);
+				sendgrid.send(email);
 				System.out.println("Sent Welcome! " + person.getPhoneNumber());
 			} catch (Exception e) {
 				e.printStackTrace();

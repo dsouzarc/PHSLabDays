@@ -11,9 +11,9 @@ public class Person {
 
 	public static final Calendar todayCalendar = new GregorianCalendar();
 
-	public static char letterDay = 'B';
+	public static char letterDay = 'C';
 	public static String message = "Good Morning"; // Can also be 'hi!'
-	public static int numSchoolDaysOver = 17;
+	public static int numSchoolDaysOver = 18;
 	public static String noSchool = "Fri, Oct 3rd, No School";
 
 	public Person(final String name, final String phoneNumber,
@@ -25,6 +25,34 @@ public class Person {
 		this.scienceDay = scienceDay;
 		this.misc = misc;
 		this.everyDay = everyDay;
+	}
+	
+	public boolean shouldGetMessage() { 
+		if(everyDay) { 
+			return true;
+		}
+		
+		if(isDay(scienceDay)) { 
+			return true;
+		}
+		if(isDay(misc)) { 
+			return true;
+		}
+		return false;
+	}
+	
+	/** Returns true if it's the science's lab day */
+	private static boolean isDay(final Science theScience) { 
+		if(theScience == null) { 
+			return false;
+		}
+		
+		for(char labDay : theScience.getLabDays()) { 
+			if(labDay == letterDay) { 
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public static String getLetterDay() {
