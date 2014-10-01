@@ -43,13 +43,69 @@ public class SendMessages {
 		
 		//Adds the new people to the HashMap and sends a welcome message
 		sendWelcome(getNewPeople());
-		
-		//theMap.clear();
-		//getNewPeople();
 		saveEveryone();
 		sendDaily();
 	}
+	
+	public static void main(String[] ryan) throws Exception {
+		final SendMessages theSender = new SendMessages();
+	}
+	
+	/** Sends a text to everyone who needs it */
+	public void sendDaily() {
+		Person.letterDay = 'C';
+		Person.message = "Salve"; // Can also be 'hi!'
+		Person.numSchoolDaysOver = 18;
+		Person.noSchool = "Fri, Oct 3rd, No School";
 
+		final Set<Integer> peopleKey = theMap.keySet();
+
+		Email email;
+		for (Integer key : peopleKey) {
+			final Person person = theMap.get(key);
+			
+			if(person.shouldGetMessage()) { 
+				System.out.println("HERE: " + person.toString());
+				email = new Email();
+				email.addTo(person.getPhoneNumber() + person.getCarrier());
+				email.setFrom("dsouzarc@gmail.com");
+				email.setSubject(person.getGreeting());
+				email.setText(person.getMessage());
+				try {
+					sendgrid.send(email);
+					System.out.println("Sent Daily! " + person.getPhoneNumber()
+							+ person.getGreeting() + "\t" + person.getMessage());
+				} catch (Exception e) {
+					e.printStackTrace();
+					System.out.println("Error sending daily" + e.toString() + "\t"
+							+ person.getPhoneNumber());
+				}
+			}
+		}
+	}
+	
+	/** Sends a welcome message to all the new people */
+	private void sendWelcome(final LinkedList<Person> newPeople) {
+		Email email;
+		for (Person person : newPeople) {
+			email = new Email();
+			email.addTo(person.getPhoneNumber() + person.getCarrier());
+			email.setFrom("dsouzarc@gmail.com");
+			email.setSubject("Welcome to PHS Lab Days");
+			email.setText("If you have any questions, please contact Ryan D'souza @ dsouzarc@gmail.com "
+					+ "or (609) 915 4930");
+			try {
+				sendgrid.send(email);
+				System.out.println("Sent Welcome! " + person.getPhoneNumber());
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.out.println("Error sending welcome" + e.toString()
+						+ "\t" + person.getPhoneNumber());
+			}
+		}
+	}
+
+	/** Sends a message to everyone */
 	private void sendMessage(final String subject, final String message) {
 		Email email;
 		final Set<Integer> peopleKey = theMap.keySet();
@@ -144,63 +200,6 @@ public class SendMessages {
 			e.printStackTrace();
 			System.out.println("Error saving: " + e.toString());
 		}
-	}
-
-	/** Sends a text to everyone who needs it */
-	public void sendDaily() {
-		Person.letterDay = 'C';
-		Person.message = "Salve"; // Can also be 'hi!'
-		Person.numSchoolDaysOver = 18;
-		Person.noSchool = "Fri, Oct 3rd, No School";
-
-		final Set<Integer> peopleKey = theMap.keySet();
-
-		Email email;
-		for (Integer key : peopleKey) {
-			final Person person = theMap.get(key);
-			
-			if(person.shouldGetMessage()) { 
-				System.out.println("HERE: " + person.toString());
-				email = new Email();
-				email.addTo(person.getPhoneNumber() + person.getCarrier());
-				email.setFrom("dsouzarc@gmail.com");
-				email.setSubject(person.getGreeting());
-				email.setText(person.getMessage());
-				try {
-					sendgrid.send(email);
-					System.out.println("Sent Daily! " + person.getPhoneNumber()
-							+ person.getGreeting() + "\t" + person.getMessage());
-				} catch (Exception e) {
-					e.printStackTrace();
-					System.out.println("Error sending daily" + e.toString() + "\t"
-							+ person.getPhoneNumber());
-				}
-			}
-		}
-	}
-
-	private void sendWelcome(final LinkedList<Person> newPeople) {
-		Email email;
-		for (Person person : newPeople) {
-			email = new Email();
-			email.addTo(person.getPhoneNumber() + person.getCarrier());
-			email.setFrom("dsouzarc@gmail.com");
-			email.setSubject("Welcome to PHS Lab Days");
-			email.setText("If you have any questions, please contact Ryan D'souza @ dsouzarc@gmail.com "
-					+ "or (609) 915 4930");
-			try {
-				sendgrid.send(email);
-				System.out.println("Sent Welcome! " + person.getPhoneNumber());
-			} catch (Exception e) {
-				e.printStackTrace();
-				System.out.println("Error sending welcome" + e.toString()
-						+ "\t" + person.getPhoneNumber());
-			}
-		}
-	}
-
-	public static void main(String[] ryan) throws Exception {
-		final SendMessages theSender = new SendMessages();
 	}
 
 	private static LinkedList<Person> getPeople() {

@@ -27,6 +27,7 @@ public class Person {
 		this.everyDay = everyDay;
 	}
 	
+	/** Returns true if person should get a message */
 	public boolean shouldGetMessage() { 
 		if(everyDay) { 
 			return true;
