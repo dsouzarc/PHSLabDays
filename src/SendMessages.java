@@ -49,28 +49,28 @@ public class SendMessages {
 	
 	public static void main(String[] ryan) throws Exception {
 		final SendMessages theSender = new SendMessages();
+		System.out.println("FINE!");
 	}
 	
 	/** Sends a text to everyone who needs it */
 	public void sendDaily() {
-		Person.letterDay = 'C';
-		Person.message = "Salve"; // Can also be 'hi!'
-		Person.numSchoolDaysOver = 18;
-		Person.noSchool = "Fri, Oct 3rd, No School";
+		Person.letterDay = 'G';
+		Person.message = "Good Morning"; // Can also be 'hi!'
+		Person.numSchoolDaysOver = 22;
+		Person.noSchool = "Thurs, Nov. 6th, No School";
 
 		final Set<Integer> peopleKey = theMap.keySet();
 
 		Email email;
 		for (Integer key : peopleKey) {
 			final Person person = theMap.get(key);
-			
 			if(person.shouldGetMessage()) { 
 				System.out.println("HERE: " + person.toString());
 				email = new Email();
 				email.addTo(person.getPhoneNumber() + person.getCarrier());
 				email.setFrom("dsouzarc@gmail.com");
 				email.setSubject(person.getGreeting());
-				email.setText(person.getMessage());
+				email.setText(person.getMessage() + " Note: Security drill from 9:15-10AM today");
 				try {
 					sendgrid.send(email);
 					System.out.println("Sent Daily! " + person.getPhoneNumber()
@@ -86,6 +86,10 @@ public class SendMessages {
 	
 	/** Sends a welcome message to all the new people */
 	private void sendWelcome(final LinkedList<Person> newPeople) {
+		if(newPeople.size() > 100) { 
+			System.out.println("TOO MANY NEW PEOPLE");
+			return;
+		}
 		Email email;
 		for (Person person : newPeople) {
 			email = new Email();
@@ -175,6 +179,7 @@ public class SendMessages {
 			e.printStackTrace();
 			System.out.println("Error updating people from textfile: "
 					+ e.toString());
+			System.exit(0);
 		}
 	}
 

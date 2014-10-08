@@ -57,7 +57,7 @@ public class Person {
 	}
 
 	public static String getLetterDay() {
-		if (letterDay == 'A') {
+		if (letterDay == 'A' || letterDay == 'E' || letterDay == 'F') {
 			return "Today is an '" + letterDay + "' day. ";
 		} else {
 			return "Today is a '" + letterDay + "' day. ";
