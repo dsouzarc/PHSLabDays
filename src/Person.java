@@ -109,12 +109,11 @@ public class Person {
 		}
 
 		// If it's not Monday and we don't get it everyday
-		if (todayCalendar.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY
-				&& !everyDay) {
+		if (!isMonday() && !everyDay) {
 			return text.toString();
 		}
 
-		if (todayCalendar.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) {
+		if (isMonday()) {
 			text.append("Days of School Left: " + (180 - numSchoolDaysOver)
 					+ ". ");
 			text.append("Next Break: " + noSchool);
