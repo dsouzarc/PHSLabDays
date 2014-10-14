@@ -37,6 +37,11 @@ public class SendMessages {
 		this.password = properties.getProperty("password");
 		this.phone = properties.getProperty("phone") + Variables.VERIZON;
 		this.sendgrid = new SendGrid(username, password);
+		
+		Person.letterDay = 'C';
+		Person.message = "Yo"; //"Good Morning"; // Can also be 'hi!'
+		Person.numSchoolDaysOver = 25;
+		Person.noSchool = "Thurs, Nov. 6th, No School";
 
 		// Gets the people in the saved JSON textfile, adds it to hashmap
 		updatePeopleFromTextFile();
@@ -54,11 +59,6 @@ public class SendMessages {
 	
 	/** Sends a text to everyone who needs it */
 	public void sendDaily() {
-		Person.letterDay = 'G';
-		Person.message = "Good Morning"; // Can also be 'hi!'
-		Person.numSchoolDaysOver = 22;
-		Person.noSchool = "Thurs, Nov. 6th, No School";
-
 		final Set<Integer> peopleKey = theMap.keySet();
 
 		Email email;
@@ -70,11 +70,15 @@ public class SendMessages {
 				email.addTo(person.getPhoneNumber() + person.getCarrier());
 				email.setFrom("dsouzarc@gmail.com");
 				email.setSubject(person.getGreeting());
-				email.setText(person.getMessage() + " Note: Security drill from 9:15-10AM today");
+				email.setText(person.getMessage());
 				try {
-					sendgrid.send(email);
-					System.out.println("Sent Daily! " + person.getPhoneNumber()
+					if(!sendgrid.send(email).getStatus()) { 
+						System.out.println("PROBLEM: " + person.toString());
+					}
+					else { 
+						System.out.println("Sent Daily! " + person.getPhoneNumber()
 							+ person.getGreeting() + "\t" + person.getMessage());
+					}
 				} catch (Exception e) {
 					e.printStackTrace();
 					System.out.println("Error sending daily" + e.toString() + "\t"

@@ -33,6 +33,10 @@ public class Person {
 			return true;
 		}
 		
+		if(isMonday()) { 
+			return true;
+		}
+		
 		if(isDay(scienceDay)) { 
 			return true;
 		}
@@ -40,6 +44,11 @@ public class Person {
 			return true;
 		}
 		return false;
+	}
+	
+	/** Return true if today is Monday */
+	public static boolean isMonday() { 
+		return todayCalendar.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY;
 	}
 	
 	/** Returns true if it's the science's lab day */
