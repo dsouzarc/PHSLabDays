@@ -100,8 +100,15 @@ public class SendMessages {
 			email.addTo(person.getPhoneNumber() + person.getCarrier());
 			email.setFrom("dsouzarc@gmail.com");
 			email.setSubject("Welcome to PHS Lab Days");
-			email.setText("If you have any questions, please contact Ryan D'souza @ dsouzarc@gmail.com "
-					+ "or (609) 915 4930");
+			
+			String welcomeText = "If you have any questions, please contact Ryan D'souza @ dsouzarc@gmail.com "
+					+ "or (609) 915 4930.";
+			
+			if(!person.shouldGetMessage()) { 
+				welcomeText += Person.getLetterDay();
+			}
+			
+			email.setText(welcomeText);
 			try {
 				sendgrid.send(email);
 				System.out.println("Sent Welcome! " + person.getPhoneNumber());
