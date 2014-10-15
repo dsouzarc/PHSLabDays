@@ -54,7 +54,7 @@ public class SendMessages {
 		theSender.sendWelcome(theSender.getNewPeople());
 		theSender.saveEveryone();
 		
-		theSender.sendMessage("'D' Day", "Today is another 'D' day. School ends at 2:51PM");
+		theSender.sendMessage("'D' Day", "Today is another 'D' day. School ends at 2:51PM. I apologize for the duplicate");
 		
 		//theSender.sendDaily();
 		
@@ -137,7 +137,7 @@ public class SendMessages {
 			email.setText(message);
 			try {
 				sendgrid.send(email);
-				System.out.println("Sent Message! " + person.getName() + "\t" + subject + "\t");
+				System.out.println("Sent Message! " + person.getName() + "\t" + subject + "\t" + "\t" + message);
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.out.println("Error sending message: " + e.toString()
