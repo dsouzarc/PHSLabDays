@@ -38,22 +38,26 @@ public class SendMessages {
 		this.phone = properties.getProperty("phone") + Variables.VERIZON;
 		this.sendgrid = new SendGrid(username, password);
 		
-		Person.letterDay = 'C';
+		Person.letterDay = 'D';
 		Person.message = "Yo"; //"Good Morning"; // Can also be 'hi!'
-		Person.numSchoolDaysOver = 25;
+		Person.numSchoolDaysOver = 27;
 		Person.noSchool = "Thurs, Nov. 6th, No School";
-
-		// Gets the people in the saved JSON textfile, adds it to hashmap
-		updatePeopleFromTextFile();
-		
-		//Adds the new people to the HashMap and sends a welcome message
-		sendWelcome(getNewPeople());
-		saveEveryone();
-		sendDaily();
 	}
 	
 	public static void main(String[] ryan) throws Exception {
 		final SendMessages theSender = new SendMessages();
+		
+		// Gets the people in the saved JSON textfile, adds it to hashmap
+		theSender.updatePeopleFromTextFile();
+		
+		//Adds the new people to the HashMap and sends a welcome message
+		theSender.sendWelcome(theSender.getNewPeople());
+		theSender.saveEveryone();
+		
+		theSender.sendMessage("'D' Day", "Today is another 'D' day. School ends at 2:51PM");
+		
+		//theSender.sendDaily();
+		
 		System.out.println("FINE!");
 	}
 	
@@ -111,7 +115,7 @@ public class SendMessages {
 			email.setText(welcomeText);
 			try {
 				sendgrid.send(email);
-				System.out.println("Sent Welcome! " + person.getPhoneNumber());
+				System.out.println("Sent Welcome! " + person.getPhoneNumber() + " " + welcomeText);
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.out.println("Error sending welcome" + e.toString()
@@ -129,12 +133,11 @@ public class SendMessages {
 			email = new Email();
 			email.addTo(person.getPhoneNumber() + person.getCarrier());
 			email.setFrom("dsouzarc@gmail.com");
-			email.setSubject(message);
-			email.setText(subject);
+			email.setSubject(subject);
+			email.setText(message);
 			try {
-				//sendgrid.send(email);
-				System.out.println("Sent Message! " + person.getPhoneNumber()
-						+ person.getGreeting());
+				sendgrid.send(email);
+				System.out.println("Sent Message! " + person.getName() + "\t" + subject + "\t");
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.out.println("Error sending message: " + e.toString()
