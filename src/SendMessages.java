@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Properties;
@@ -38,9 +39,9 @@ public class SendMessages {
 		this.phone = properties.getProperty("phone") + Variables.VERIZON;
 		this.sendgrid = new SendGrid(username, password);
 		
-		Person.letterDay = 'D';
-		Person.message = "Yo"; //"Good Morning"; // Can also be 'hi!'
-		Person.numSchoolDaysOver = 27;
+		Person.letterDay = 'E';
+		Person.message = "Good Morning"; //"Good Morning"; // Can also be 'hi!'
+		Person.numSchoolDaysOver = 28;
 		Person.noSchool = "Thurs, Nov. 6th, No School";
 	}
 	
@@ -54,9 +55,9 @@ public class SendMessages {
 		theSender.sendWelcome(theSender.getNewPeople());
 		theSender.saveEveryone();
 		
-		theSender.sendMessage("'D' Day", "Today is another 'D' day. School ends at 2:51PM. I apologize for the duplicate");
+		//theSender.sendMessage("'E' Day", "Today is an 'E' day. I apologize for the duplicate");
 		
-		//theSender.sendDaily();
+		theSender.sendDaily();
 		
 		System.out.println("FINE!");
 	}
@@ -77,7 +78,7 @@ public class SendMessages {
 				email.setText(person.getMessage());
 				try {
 					if(!sendgrid.send(email).getStatus()) { 
-						System.out.println("PROBLEM: " + person.toString());
+						System.out.println("\n\nPROBLEM: " + person.toString());
 					}
 					else { 
 						System.out.println("Sent Daily! " + person.getPhoneNumber()
@@ -115,7 +116,7 @@ public class SendMessages {
 			email.setText(welcomeText);
 			try {
 				sendgrid.send(email);
-				System.out.println("Sent Welcome! " + person.getPhoneNumber() + " " + welcomeText);
+				System.out.println("Sent Welcome! " + person.getName() + " " + person.getPhoneNumber() + " " + welcomeText);
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.out.println("Error sending welcome" + e.toString()
@@ -193,7 +194,7 @@ public class SendMessages {
 			e.printStackTrace();
 			System.out.println("Error updating people from textfile: "
 					+ e.toString());
-			System.exit(0);
+			//System.exit(0);
 		}
 	}
 
@@ -245,11 +246,19 @@ public class SendMessages {
 				final String number = formatNumber(data[2]);
 				final String carrier = assignCarrier(data[3].toLowerCase());
 				final boolean everyday = data[4].contains("Every");
+				
 				final String science = data[5];
 				final char[] labDays = getLabDays(data[6]);
 				final char[] miscDays = getLabDays(data[7]);
-				final String misc = data[8];
-
+				
+				final String misc;
+				if(data.length > 8) { 
+					misc = data[8];
+				}
+				else { 
+					misc = "";
+				}
+				
 				final Person person = new Person(name, number, carrier,
 						new Science(science, labDays), new Science(misc,
 								miscDays), everyday);
