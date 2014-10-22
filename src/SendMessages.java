@@ -41,7 +41,7 @@ public class SendMessages {
 		
 		Person.letterDay = 'E';
 		Person.message = "Good Morning"; //"Good Morning"; // Can also be 'hi!'
-		Person.numSchoolDaysOver = 28;
+		Person.numSchoolDaysOver = 29;
 		Person.noSchool = "Thurs, Nov. 6th, No School";
 	}
 	
